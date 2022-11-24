@@ -1,5 +1,6 @@
 #include "Map.h"
 #include "../Primitives/Primitives.h"
+#include "../Primitives/Vector2D.h"
 
 #include <fstream>
 #include <iostream>
@@ -9,6 +10,15 @@
 
 Map::Map(int sizeX, int sizeY) : loaded(false), sizeX(sizeX), sizeY(sizeY)
 {
+}
+
+Map::~Map()
+{
+    for_each(map_objects.begin(), map_objects.end(),
+        [](DrawingObject* obj) {
+            delete obj;
+        }
+    );
 }
 
 void Map::loadMap(const char* path)
@@ -21,7 +31,7 @@ void Map::loadMap(const char* path)
     }
     char a;
     cout << "Lvl file reading..." << endl;
-    for (int i = 0; i < 36; i++)
+    for (int i = 0; i < 34; i++)
     {
         for (int j = 0; j < 65; j++)
         {
@@ -39,14 +49,33 @@ void Map::loadMap(const char* path)
 
 void Map::mapInit()
 {
-    // Here is you need to interpret symbols as objects like 'walls' or 'coins'  
+    // Here is you need to interpret symbols as objects like 'walls' or 'coins' 
+    float blockSizeX = float(sizeX) / 64.0;
+    float blockSizeY = float(sizeY) / 34.0;
+
+
+    for (int i = 0; i < 34; ++i)
+    {
+        for (int j = 0; j < 65; ++j)
+        {
+            if (lvlmap[i][j] == '@')
+            {
+                double x = blockSizeX / 2 + blockSizeX * j;
+                double y = sizeY - ( blockSizeY / 2 + blockSizeY * i );
+                rectangle* wallBlock = new rectangle(T(x, y), blockSizeX, blockSizeY, 0.2, 0.0, 0.5);
+                map_objects.push_back(wallBlock);
+            }
+        }
+    }
+
+    std::cout << "Map was successfully initialized. Number of wall blocks is " << map_objects.size() << std::endl;
 }
 
 void Map::print() const
 {
-    for_each(map_objects.begin(), map_objects.end(),
-        [](const DrawingObject& obj) {
-            obj.print();
+    for_each(map_objects.cbegin(), map_objects.cend(),
+        [](const DrawingObject* obj) {
+            obj->print();
         }
     );
 }

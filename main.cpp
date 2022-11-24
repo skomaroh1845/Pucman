@@ -1,12 +1,13 @@
 #include <iostream>
 #include <glut.h>
 
-
+#include "Map.h"
 
 
 
 
 // Global variables  
+Map* pMap;
 
 
 // Main game loop
@@ -17,6 +18,7 @@ void display() {
 
     // Objects drawing
     // ...
+    pMap->print();
 
 
     // Events managment
@@ -46,7 +48,12 @@ int main(int argc, char* argv[])
 {
     // user init
     std::cout << "Game is started." << std::endl;
+    Map gameMap(700, 500);
+    gameMap.loadMap("Level1.txt");
+    if (!gameMap.is_loaded()) return 1;
+    gameMap.mapInit();
 
+    pMap = &gameMap;
 
     // glut init
     glutInit(&argc, argv); 

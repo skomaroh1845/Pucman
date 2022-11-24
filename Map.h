@@ -8,16 +8,18 @@ using namespace std;
 // It is a class of game map
 class Map final
 {
-	char lvlmap[34][64];   // loads from file
+	char lvlmap[34][65];   // loads from file
 	bool loaded;
 
 	int sizeX, sizeY;   
 
-	vector<DrawingObject> map_objects;
+	vector<DrawingObject*> map_objects;
 
 public: 
 
 	Map(int sizeX, int sizeY);
+
+	~Map();
 
 	void loadMap(const char* path);
 
