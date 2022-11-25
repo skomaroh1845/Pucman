@@ -1,5 +1,6 @@
-#include <iostream>
+﻿#include <iostream>
 #include <glut.h>
+#include <Windows.h>
 
 #include "Map.h"
 #include "Pucman.h"
@@ -27,14 +28,36 @@ void display() {
     
     Player->print();
     Player->animate();
+    
 
 
     // Events managment
     // ...
-
+    Player->move();
 
     // Keyboard clicks processing
     // ...
+    if (GetAsyncKeyState((unsigned short)'W')) {
+        Player->rotate(90);
+    }
+    if (GetAsyncKeyState((unsigned short)'A')) {
+        Player->rotate(180);
+    }
+    if (GetAsyncKeyState((unsigned short)'S')) {
+        Player->rotate(270);
+    }
+    if (GetAsyncKeyState((unsigned short)'D')) {
+        Player->rotate(0);
+    }
+    if (GetAsyncKeyState((unsigned short)'\x1b')) {
+        exit(0);
+    }
+    if (GetAsyncKeyState(VK_LBUTTON)) {
+        std::cout << "mouse click" << std::endl;
+        POINT p;
+        GetCursorPos(&p);
+        std::cout << p.x << " " << p.y << std::endl;
+    }
 
 
     // Buffers swap
@@ -62,7 +85,8 @@ void MouseMotion(int x, int y) {
 
 
 void KeyBoardClick(unsigned char key, int x, int y) {
-
+    //std::cout << "KeyBoardClick " << key << 
+      //           ". x, y: " << x << y << std::endl;
 }
 
 

@@ -4,27 +4,29 @@
 
 Pucman::Pucman(const T& center, float size) : score(0), lives(3),
 		body(circle(center, size, 1, 1, 0)), eye(circle(T(center.x, center.y + size/2), 2, 0, 0, 0)),
-		up(false), down(false), right(true), left(false), angle1(45), angle2(360-45), mouth_open(false)
+		mouth(circle(center, size, 0, 0, 0)), direction(0), angle(45), mouth_open(false), speed(1)
 {
 }
 
 void Pucman::print() const
 {
-	body.print(angle1, angle2);
+	body.print();
+	mouth.print(direction - angle, direction + angle);
 	eye.print();
 }
 
 void Pucman::moveBy(double x, double y)
 {
 	body.moveBy(x, y);
+	mouth.moveBy(x, y);
 	eye.moveBy(x, y);
 }
 
 void Pucman::moveTo(double x, double y)
 {
 	body.moveTo(x, y);
-
-	if (right || left)
+	mouth.moveTo(x, y);
+	if (direction % 180 == 0)
 		eye.moveTo(x, y + body.R / 2);
 	else 
 		eye.moveTo(x - body.R / 2, y);
@@ -32,38 +34,33 @@ void Pucman::moveTo(double x, double y)
 
 void Pucman::rotate(double angle)
 {
-	if (angle == 90) {
-		up = true; down = false; right = false; left = false;
-		eye.moveTo(body.getCenter().x - body.R / 2, body.getCenter().y);
-	}
 	if (angle == 0) {
-		up = false; down = false; right = true; left = false;
 		eye.moveTo(body.getCenter().x, body.getCenter().y + body.R / 2);
-	}
-	if (angle == 180) {
-		up = false; down = false; right = false; left = true;
+	} else if (angle == 180) {
 		eye.moveTo(body.getCenter().x, body.getCenter().y + body.R / 2);
-	}
-	if (angle == 270) {
-		up = false; down = true; right = false; left = false;
+	} else if (angle == 90) {
+		eye.moveTo(body.getCenter().x - body.R / 2, body.getCenter().y);
+	} else if (angle == 270) {
 		eye.moveTo(body.getCenter().x - body.R / 2, body.getCenter().y);
 	}
-	angle1 = angle + 45;
-	angle2 = angle - 45;
+	direction = angle;
 }
 
 void Pucman::animate(float speed)
 {
 	if (mouth_open) 
 	{
-		angle1 += speed * 2;
-		angle2 -= speed * 2;
-		if (angle2 - angle1 < 270) mouth_open = false;
+		angle += speed * 2;
+		if (angle > 45) mouth_open = false;
 	} else {
-		angle1 -= speed * 2;
-		angle2 += speed * 2;
-		if (angle2 - angle1 > 359) mouth_open = true;
+		angle -= speed * 2;
+		if (angle < speed * 2) mouth_open = true;
 	}
+}
+
+void Pucman::move()
+{
+	moveBy(speed * cos(direction * 3.14 / 180), speed * sin(direction * 3.14 / 180));
 }
 
 void Pucman::death()

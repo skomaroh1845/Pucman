@@ -9,14 +9,16 @@ class Pucman:
 	public DrawingObject
 {
 	circle body;
+	circle mouth;
 	circle eye;
 
-	bool up, down, right, left;  // direction
+	int direction;  // in degrees 
 
 	int score;
 	int lives;
+	float speed;
 
-	float angle1, angle2;  // used for animation
+	float angle;  // used for animation
 	bool mouth_open; 
 
 public:
@@ -31,6 +33,8 @@ public:
 	void rotate(double angle) override;  // only 0, 90, 180, 270 
 
 	void animate(float speed = 1);
+
+	void move();  // move in existed direction 
 
 	void death();
 };
