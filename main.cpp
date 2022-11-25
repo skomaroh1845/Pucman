@@ -4,6 +4,7 @@
 
 #include "Map.h"
 #include "Pucman.h"
+#include "Ghost.h"
 
 
 
@@ -11,7 +12,7 @@
 // Global variables  
 Map* pMap;
 Pucman* Player;
-
+Ghost* ghost;
 
 
 
@@ -29,11 +30,15 @@ void display() {
     Player->print();
     Player->animate();
     
+    ghost->print();
+    ghost->animate();
 
 
     // Events managment
     // ...
     Player->move();
+    Ghost::getPlayerPos(*Player);
+    ghost->move();
 
     // Keyboard clicks processing
     // ...
@@ -105,6 +110,11 @@ int main(int argc, char* argv[])
     srand(time(0));
     Pucman user(gameMap.getPlayerSpawn(rand()), gameMap.getPlayerSize());
     Player = &user;
+    // Ghost
+    Ghost::getPlayerPos(user);
+    Ghost enemy(T(100, 100), gameMap.getPlayerSize(), 0.5, 0.5, 0.5);
+    ghost = &enemy;
+    
 
     // glut init
     glutInit(&argc, argv); 

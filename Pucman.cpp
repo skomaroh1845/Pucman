@@ -6,6 +6,7 @@ Pucman::Pucman(const T& center, float size) : score(0), lives(3),
 		body(circle(center, size, 1, 1, 0)), eye(circle(T(center.x, center.y + size/2), 2, 0, 0, 0)),
 		mouth(circle(center, size, 0, 0, 0)), direction(0), angle(45), mouth_open(false), speed(1)
 {
+	setCenter(center);
 }
 
 void Pucman::print() const
@@ -20,6 +21,7 @@ void Pucman::moveBy(double x, double y)
 	body.moveBy(x, y);
 	mouth.moveBy(x, y);
 	eye.moveBy(x, y);
+	setCenter( T( getCenter().x + x, getCenter().y + y ) );
 }
 
 void Pucman::moveTo(double x, double y)
@@ -30,6 +32,7 @@ void Pucman::moveTo(double x, double y)
 		eye.moveTo(x, y + body.R / 2);
 	else 
 		eye.moveTo(x - body.R / 2, y);
+	setCenter(T(x, y));
 }
 
 void Pucman::rotate(double angle)

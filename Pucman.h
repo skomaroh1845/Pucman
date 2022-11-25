@@ -32,7 +32,7 @@ public:
 
 	void rotate(double angle) override;  // only 0, 90, 180, 270 
 
-	void animate(float speed = 1);
+	void animate(float speed = 1) override;
 
 	void move();  // move in existed direction 
 
