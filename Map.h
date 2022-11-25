@@ -11,9 +11,10 @@ class Map final
 	char lvlmap[34][65];   // loads from file
 	bool loaded;
 
-	int sizeX, sizeY;   
+	int sizeX, sizeY;        // technical info
+	vector<T> creatureSpawn;
 
-	vector<DrawingObject*> map_objects;
+	vector<DrawingObject*> mapObjects;  // walls and coins
 	int numCoins;
 
 public: 
@@ -32,5 +33,10 @@ public:
 
 	void animate();
 
+	T getPlayerSpawn(int spawnNum);
+
+	float getPlayerSize() const;
+
+	//void addObjToMap(const DrawingObject& obj);
 };
 

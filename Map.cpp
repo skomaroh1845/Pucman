@@ -9,14 +9,13 @@
 #include <algorithm>
 
 
-
 Map::Map(int sizeX, int sizeY) : loaded(false), sizeX(sizeX), sizeY(sizeY), numCoins(0)
 {
 }
 
 Map::~Map()
 {
-    for_each(map_objects.begin(), map_objects.end(),
+    for_each(mapObjects.begin(), mapObjects.end(),
         [](DrawingObject* obj) {
             delete obj;
         }
@@ -59,15 +58,15 @@ void Map::mapInit()
     {
         for (int j = 0; j < 65; ++j)
         {
-            if (lvlmap[i][j] == '@')
+            if (lvlmap[i][j] == '@')  // Walls
             {
                 float x = blockSizeX / 2 + blockSizeX * j;
                 float y = sizeY - ( blockSizeY / 2 + blockSizeY * i );
 
                 Wall* wallBlock = new Wall(T(x, y), blockSizeX, blockSizeY, 0.2, 0.0, 0.5);
-                map_objects.push_back(wallBlock);
+                mapObjects.push_back(wallBlock);
             }
-            if ( i+1 < 34 && j + 1 < 65)
+            if ( i+1 < 34 && j + 1 < 65)  // Coins
             {
                 if (lvlmap[i][j] == '.' && lvlmap[i + 1][j] == '.' && 
                     lvlmap[i][j + 1] == '.' && lvlmap[i + 1][j + 1] == '.')
@@ -76,20 +75,26 @@ void Map::mapInit()
                     float y = sizeY - (blockSizeY + blockSizeY * i);
 
                     Coin* coin = new Coin(T(x, y), blockSizeX / 4, (j+i) % 2);
-                    map_objects.push_back(coin);
+                    mapObjects.push_back(coin);
                     ++numCoins;
+
+                    if (rand() % 100 == 1) {           // Get random spawn coordinates
+                        creatureSpawn.push_back(T(x, y)); 
+                    }
                 }
             }
         }
     }
 
-    std::cout << "Map was successfully initialized. Number of elements is " << map_objects.size() <<
+    std::cout << "Map was successfully initialized. Number of elements is " << mapObjects.size() <<
                  ". Number of coins is " << numCoins << std::endl;
+    std::cout << creatureSpawn.size() << std::endl;
+    
 }
 
 void Map::print() const
 {
-    for_each(map_objects.cbegin(), map_objects.cend(),
+    for_each(mapObjects.cbegin(), mapObjects.cend(),
         [](const DrawingObject* obj) {
             obj->print();
         }
@@ -103,9 +108,22 @@ bool Map::is_loaded() const
 
 void Map::animate()
 {
-    for_each(map_objects.begin(), map_objects.end(),
+    for_each(mapObjects.begin(), mapObjects.end(),
         [](DrawingObject* obj) {
             obj->animate();
         }
     );
+}
+
+T Map::getPlayerSpawn(int spawnNum)
+{
+    spawnNum = spawnNum % creatureSpawn.size();
+    T playerSpawn = creatureSpawn[spawnNum];
+    creatureSpawn.erase(creatureSpawn.begin() + spawnNum);
+    return playerSpawn;
+}
+
+float Map::getPlayerSize() const
+{
+    return float(sizeX) / 64.0 * 0.8;
 }
