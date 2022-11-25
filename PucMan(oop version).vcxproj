@@ -22,9 +22,11 @@
     <ClInclude Include="..\Primitives\DrawingObject.h" />
     <ClInclude Include="..\Primitives\Primitives.h" />
     <ClInclude Include="..\Primitives\Vector2D.h" />
+    <ClInclude Include="Coin.h" />
     <ClInclude Include="Ghost.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Pucman.h" />
+    <ClInclude Include="Wall.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Primitives\circle.cpp" />
@@ -32,10 +34,12 @@
     <ClCompile Include="..\Primitives\line.cpp" />
     <ClCompile Include="..\Primitives\rectangle.cpp" />
     <ClCompile Include="..\Primitives\Vector2D.cpp" />
+    <ClCompile Include="Coin.cpp" />
     <ClCompile Include="Ghost.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Pucman.cpp" />
+    <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

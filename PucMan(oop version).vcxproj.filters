@@ -33,6 +33,12 @@
     <ClInclude Include="..\Primitives\DrawingObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Coin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Wall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Ghost.cpp">
@@ -60,6 +66,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Primitives\circle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Coin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Wall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

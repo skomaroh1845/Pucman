@@ -19,6 +19,7 @@ void display() {
     // Objects drawing
     // ...
     pMap->print();
+    pMap->animate();
 
 
     // Events managment

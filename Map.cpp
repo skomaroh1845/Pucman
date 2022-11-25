@@ -1,6 +1,8 @@
 #include "Map.h"
 #include "../Primitives/Primitives.h"
 #include "../Primitives/Vector2D.h"
+#include "Coin.h"
+#include "Wall.h"
 
 #include <fstream>
 #include <iostream>
@@ -8,7 +10,7 @@
 
 
 
-Map::Map(int sizeX, int sizeY) : loaded(false), sizeX(sizeX), sizeY(sizeY)
+Map::Map(int sizeX, int sizeY) : loaded(false), sizeX(sizeX), sizeY(sizeY), numCoins(0)
 {
 }
 
@@ -53,22 +55,36 @@ void Map::mapInit()
     float blockSizeX = float(sizeX) / 64.0;
     float blockSizeY = float(sizeY) / 34.0;
 
-
     for (int i = 0; i < 34; ++i)
     {
         for (int j = 0; j < 65; ++j)
         {
             if (lvlmap[i][j] == '@')
             {
-                double x = blockSizeX / 2 + blockSizeX * j;
-                double y = sizeY - ( blockSizeY / 2 + blockSizeY * i );
-                rectangle* wallBlock = new rectangle(T(x, y), blockSizeX, blockSizeY, 0.2, 0.0, 0.5);
+                float x = blockSizeX / 2 + blockSizeX * j;
+                float y = sizeY - ( blockSizeY / 2 + blockSizeY * i );
+
+                Wall* wallBlock = new Wall(T(x, y), blockSizeX, blockSizeY, 0.2, 0.0, 0.5);
                 map_objects.push_back(wallBlock);
+            }
+            if ( i+1 < 34 && j + 1 < 65)
+            {
+                if (lvlmap[i][j] == '.' && lvlmap[i + 1][j] == '.' && 
+                    lvlmap[i][j + 1] == '.' && lvlmap[i + 1][j + 1] == '.')
+                {
+                    float x = blockSizeX + blockSizeX * j;
+                    float y = sizeY - (blockSizeY + blockSizeY * i);
+
+                    Coin* coin = new Coin(T(x, y), blockSizeX / 4, (j+i) % 2);
+                    map_objects.push_back(coin);
+                    ++numCoins;
+                }
             }
         }
     }
 
-    std::cout << "Map was successfully initialized. Number of wall blocks is " << map_objects.size() << std::endl;
+    std::cout << "Map was successfully initialized. Number of elements is " << map_objects.size() <<
+                 ". Number of coins is " << numCoins << std::endl;
 }
 
 void Map::print() const
@@ -83,4 +99,13 @@ void Map::print() const
 bool Map::is_loaded() const
 {
     return loaded;
+}
+
+void Map::animate()
+{
+    for_each(map_objects.begin(), map_objects.end(),
+        [](DrawingObject* obj) {
+            obj->animate();
+        }
+    );
 }

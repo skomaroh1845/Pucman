@@ -14,6 +14,7 @@ class Map final
 	int sizeX, sizeY;   
 
 	vector<DrawingObject*> map_objects;
+	int numCoins;
 
 public: 
 
@@ -28,6 +29,8 @@ public:
 	void print() const;
 
 	bool is_loaded() const;
+
+	void animate();
 
 };
 
