@@ -36,34 +36,42 @@ void display() {
 
     // Events managment
     // ...
-    Player->move();
-    Ghost::getPlayerPos(*Player);
-    ghost->move();
+    if ( Player->canMove(pMap->getWallsGroup()) )
+       Player->move();
 
+
+    Ghost::getPlayerPos(*Player);
+    
+    //if ( ghost->canMove(pMap->getWallsGroup()) )
+    //    ghost->move();
+    //else
+    //    ghost->chooseDirection(pMap->getWallsGroup());
+    
+        
     // Keyboard clicks processing
-    // ...
     if (GetAsyncKeyState((unsigned short)'W')) {
         Player->rotate(90);
+        //ghost->rotate(90);
     }
     if (GetAsyncKeyState((unsigned short)'A')) {
         Player->rotate(180);
+        //ghost->rotate(180);
     }
     if (GetAsyncKeyState((unsigned short)'S')) {
         Player->rotate(270);
+        //ghost->rotate(270);
     }
     if (GetAsyncKeyState((unsigned short)'D')) {
         Player->rotate(0);
+        //ghost->rotate(0);
     }
     if (GetAsyncKeyState((unsigned short)'\x1b')) {
         exit(0);
     }
     if (GetAsyncKeyState(VK_LBUTTON)) {
-        std::cout << "mouse click" << std::endl;
         POINT p;
         GetCursorPos(&p);
-        std::cout << p.x << " " << p.y << std::endl;
     }
-
 
     // Buffers swap
     glutSwapBuffers();
@@ -75,23 +83,6 @@ void display() {
 void timer(int = 0) {
     display();
     glutTimerFunc(20, timer, 0);
-}
-
-
-// User input //
-void MouseClick(int button, int state, int x, int y) {
-
-}
-
-
-void MouseMotion(int x, int y) {
-
-}
-
-
-void KeyBoardClick(unsigned char key, int x, int y) {
-    //std::cout << "KeyBoardClick " << key << 
-      //           ". x, y: " << x << y << std::endl;
 }
 
 
@@ -108,11 +99,11 @@ int main(int argc, char* argv[])
     pMap = &gameMap;
     // Player 
     srand(time(0));
-    Pucman user(gameMap.getPlayerSpawn(rand()), gameMap.getPlayerSize());
+    Pucman user(gameMap.getSpawn(rand()), gameMap.getSize());
     Player = &user;
     // Ghost
     Ghost::getPlayerPos(user);
-    Ghost enemy(T(100, 100), gameMap.getPlayerSize(), 0.5, 0.5, 0.5);
+    Ghost enemy(gameMap.getSpawn(rand()), gameMap.getSize(), 1, 0, 0);
     ghost = &enemy;
     
 
@@ -128,11 +119,6 @@ int main(int argc, char* argv[])
     glOrtho(0, 700, 0, 500, -1, 1);
     //glutFullScreen();
     glutDisplayFunc(display);
-
-    // Manage user input 
-    glutMouseFunc(MouseClick);
-    glutMotionFunc(MouseMotion);
-    glutKeyboardFunc(KeyBoardClick);
 
     // Enter in game loop
     timer(0);

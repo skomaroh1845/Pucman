@@ -1,15 +1,15 @@
 #pragma once
 
-#include "../Primitives/DrawingObject.h"
 #include "../Primitives/Primitives.h"
-#include "../Primitives/Vector2D.h"
+#include "Creature.h"
 #include "Pucman.h"
+#include "Wall.h"
+#include <vector>
 
 // Enemy class
 class Ghost : 
-	public DrawingObject
+	public Creature
 {
-	
 	circle eye[2];
 	circle pupil[2];
 	circle head;
@@ -18,9 +18,6 @@ class Ghost :
 
 	bool skirtFlag;
 	int animationTimer;
-
-	int direction; 
-	float speed;
 
 	static T playerPos;
 
@@ -40,9 +37,8 @@ public:
 
 	void animate(float speed = 1) override;
 
-	void move();  // move in existed direction 
-
 	static void getPlayerPos(const Pucman& P);
 
+	void chooseDirection(const vector<Wall*>& objs);
 };
 

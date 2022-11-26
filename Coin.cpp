@@ -3,7 +3,7 @@
 Coin::Coin(const T& center, float R, bool up) : center(center), R(R), 
 		y0(center.y), y_max(center.y + R / 4), y_min(center.y - R / 4),  move_up(up)
 {
-	C[0] = circle(center, R * 1, 0.6, 0.7, 0);
+	C[0] = circle(center, R, 0.6, 0.7, 0);
 	C[1] = circle(center, R * 0.7, 0.5, 0.4, 0);
 }
 

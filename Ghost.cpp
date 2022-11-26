@@ -3,12 +3,17 @@
 T Ghost::playerPos = T(0, 0);
 
 Ghost::Ghost(const T& center, float size, float r, float g, float b) : 
-		speed(0.7), direction(0),
 		head(center, size, r, g, b), body(T(center.x, center.y - size/4), size*2, size/2, r, g, b),
 		skirtFlag(rand() % 2), animationTimer(25)
 {
+	speed = 0.7;
+	direction = 0;
+	this->size = size;
+	distToWall = size * 1.3;
 	setColor(r, g, b);
 	setCenter(center);
+
+	// init graphic
 	float eyeSize = size / 3;
 	eye[0] = circle(T(center.x + size / 2, center.y + size / 4), eyeSize);
 	eye[1] = circle(T(center.x - size / 2, center.y + size / 4), eyeSize);
@@ -108,27 +113,48 @@ void Ghost::animate(float speed)
 	}
 }
 
-void Ghost::move()
-{
-	T grad = (playerPos - getCenter()) / (playerPos - getCenter()).length();
-	
-	if (abs(grad.x) > abs(grad.y)) {
-		if (grad.x < 0)
-			rotate(180);
-		else
-			rotate(0);
-	}
-	else {
-		if (grad.y > 0)
-			rotate(90);
-		else
-			rotate(270);
-	}
-
-	moveBy(grad.x * speed, grad.y * speed);
-}
-
 void Ghost::getPlayerPos(const Pucman& P)
 {
 	playerPos = P.getCenter();
+}
+
+void Ghost::chooseDirection(const vector<Wall*>& objs)
+{
+	T grad = (playerPos - getCenter()) / (playerPos - getCenter()).length();
+
+	vector<int> dirs = { 0, 90, 180, 270 };
+
+	for (int i = 0; i < 3; ++i)
+	{
+		if (abs(grad.x) > abs(grad.y)) {
+			if (grad.x < 0)
+			{
+				direction = 180;
+				dirs.erase( dirs.begin() + 2 );
+			}
+			else
+			{
+				direction = 0;
+				dirs.erase( dirs.begin() );
+			}
+			grad.x = 0;
+		}
+		else 
+		if (abs(grad.x) > abs(grad.y)) {
+			if (grad.y > 0)
+			{
+				direction = 90;
+				dirs.erase( dirs.begin() + 1 );
+			}
+			else
+			{
+				direction = 270;
+				dirs.erase( dirs.begin() );
+			}
+			grad.y = 0;
+		}
+		else {
+			direction = dirs[rand() % 2];
+		}
+	}
 }

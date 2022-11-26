@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "../Primitives/DrawingObject.h"
+#include "Wall.h"
 
 using namespace std;
 
@@ -14,10 +15,11 @@ class Map final
 	int sizeX, sizeY;        // technical info
 	vector<T> creatureSpawn;
 
-	vector<DrawingObject*> mapObjects;  // walls and coins
+	vector<Wall*> walls;  // walls and coins
+	vector<DrawingObject*> coins;
+	
+public:
 	int numCoins;
-
-public: 
 
 	Map(int sizeX, int sizeY);
 
@@ -33,10 +35,12 @@ public:
 
 	void animate();
 
-	T getPlayerSpawn(int spawnNum);
+	T getSpawn(int spawnNum);
 
-	float getPlayerSize() const;
+	float getSize() const;
 
-	//void addObjToMap(const DrawingObject& obj);
+	vector<Wall*>& getWallsGroup();
+
+	vector<DrawingObject*>& getCoinsGroup();
 };
 

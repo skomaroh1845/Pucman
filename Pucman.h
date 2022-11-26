@@ -1,25 +1,23 @@
 #pragma once
 
-#include "../Primitives/DrawingObject.h"
 #include "../Primitives/Primitives.h"
+#include "Creature.h"
 
+using namespace std;
 
 // Player class
 class Pucman: 
-	public DrawingObject
+	public Creature
 {
 	circle body;
 	circle mouth;
 	circle eye;
 
-	int direction;  // in degrees 
-
-	int score;
-	int lives;
-	float speed;
-
 	float angle;  // used for animation
 	bool mouth_open; 
+
+	int score;
+	int lives;	
 
 public:
 	Pucman(const T& center, float size);
@@ -33,9 +31,7 @@ public:
 	void rotate(double angle) override;  // only 0, 90, 180, 270 
 
 	void animate(float speed = 1) override;
-
-	void move();  // move in existed direction 
-
+	
 	void death();
 };
 

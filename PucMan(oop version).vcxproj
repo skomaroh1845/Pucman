@@ -23,6 +23,7 @@
     <ClInclude Include="..\Primitives\Primitives.h" />
     <ClInclude Include="..\Primitives\Vector2D.h" />
     <ClInclude Include="Coin.h" />
+    <ClInclude Include="Creature.h" />
     <ClInclude Include="Ghost.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Pucman.h" />
@@ -35,6 +36,7 @@
     <ClCompile Include="..\Primitives\rectangle.cpp" />
     <ClCompile Include="..\Primitives\Vector2D.cpp" />
     <ClCompile Include="Coin.cpp" />
+    <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Ghost.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />

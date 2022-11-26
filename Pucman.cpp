@@ -1,12 +1,21 @@
 #include "Pucman.h"
 #include "../Primitives/Primitives.h"
+#include "Wall.h"
+#include <vector>
+#include <algorithm>
+
+using namespace std;
 
 
 Pucman::Pucman(const T& center, float size) : score(0), lives(3),
-		body(circle(center, size, 1, 1, 0)), eye(circle(T(center.x, center.y + size/2), 2, 0, 0, 0)),
-		mouth(circle(center, size, 0, 0, 0)), direction(0), angle(45), mouth_open(false), speed(1)
+		body(circle(center, size, 1, 1, 0)), eye(circle(T(center.x, center.y + size/2), size/5, 0, 0, 0)),
+		mouth(circle(center, size, 0, 0, 0)), angle(45), mouth_open(false)
 {
 	setCenter(center);
+	direction = 0;
+	speed = 1;
+	distToWall = size * 1.3;
+	this->size = size;
 }
 
 void Pucman::print() const
@@ -61,11 +70,7 @@ void Pucman::animate(float speed)
 	}
 }
 
-void Pucman::move()
-{
-	moveBy(speed * cos(direction * 3.14 / 180), speed * sin(direction * 3.14 / 180));
-}
-
 void Pucman::death()
 {
+
 }

@@ -11,6 +11,8 @@ public:
     
     void print() const override;
 
-    //void animate(float speed = 1) override;
+    float getSizeX() const;
+
+    float getSizeY() const;
 };
 
