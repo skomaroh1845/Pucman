@@ -22,6 +22,8 @@ class Map final
 public:
 	int numCoins;
 
+	int numGhosts;
+
 	Map(int sizeX, int sizeY);
 
 	~Map();

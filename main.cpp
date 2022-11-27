@@ -33,7 +33,7 @@ void display() {
         creatures[0]->move();
 
     // Ghosts
-   /* Ghost::playerPos = creatures[0]->getCenter();
+    Ghost::playerPos = creatures[0]->getCenter();
 
     for_each(creatures.begin()+1, creatures.end(),
         [](Creature* el) {
@@ -43,7 +43,7 @@ void display() {
             if (el->canMove(el->direction))
                 el->move();
         }
-    );   */ 
+    );    
 
     // Keyboard clicks processing
     if (GetAsyncKeyState((unsigned short)'W')) {
@@ -101,9 +101,10 @@ int main(int argc, char* argv[])
     Pucman* user = new Pucman(gameMap.getSpawn(rand()), gameMap.getSize());
     creatures.push_back(user);
     // Ghosts
-    for (int i = 0; i < 1; ++i)
+    for (int i = 0; i < gameMap.numGhosts; ++i)
     {
-        Ghost* enemy = new Ghost(gameMap.getSpawn(rand()), gameMap.getSize(), 1, 0, 0);
+        Ghost* enemy = new Ghost( gameMap.getSpawn(rand()), gameMap.getSize(), 
+                                  float(rand()%10)/9, float(rand() % 10)/9, float(rand() % 10)/9 );
         creatures.push_back(enemy);
     }
 

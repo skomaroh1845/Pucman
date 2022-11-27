@@ -19,8 +19,13 @@ class Ghost :
 	int animationTimer;
 
 	T grad;  // gradient to player position
+	int chooseTimer;
+	int lastDir;  // last direction
+	bool decisionFlag;
+	
 
 public:
+	bool brainMod;  // true = smart; false = random
 
 	static T playerPos;
 	
@@ -37,8 +42,6 @@ public:
 	void rotate(double angle) override;  // only 0, 90, 180, 270 
 
 	void animate(float speed = 1) override;
-
-	static void getPlayerPos(T& center);
 
 	void chooseDirection();
 

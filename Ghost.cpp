@@ -1,13 +1,19 @@
 #include "Ghost.h"
+#include "../Primitives/Vector2D.h"
+#include <algorithm>
+
+using namespace std;
 
 T Ghost::playerPos = T(0, 0);
 
 Ghost::Ghost(const T& center, float size, float r, float g, float b) : 
 		head(center, size, r, g, b), body(T(center.x, center.y - size/4), size*2, size/2, r, g, b),
-		skirtFlag(rand() % 2), animationTimer(25), grad(T(-1, 1))
+		skirtFlag(rand() % 2), animationTimer(25), grad(T(-1, 1)), chooseTimer(20)
 {
 	speed = 0.7;
 	direction = 0;
+	lastDir = direction;
+	decisionFlag = true;
 	this->size = size;
 	setColor(r, g, b);
 	setCenter(center);
@@ -96,6 +102,7 @@ void Ghost::moveTo(double x, double y)
 
 void Ghost::rotate(double angle)
 {
+	lastDir = ( int(angle) + 180 ) % 360;
 	direction = int(angle);
 	pupil[0].moveTo(getCenter().x + head.R / 2 + pupil[0].R * cos(direction * 3.14 / 180),
 					getCenter().y + head.R / 4 + pupil[0].R * sin(direction * 3.14 / 180));
@@ -114,27 +121,25 @@ void Ghost::animate(float speed)
 
 void Ghost::chooseDirection()
 {
-	if (!canMove(direction)) 
+	--chooseTimer;
+	if (it_is_corner() && chooseTimer < 0)
 	{
-		rotate(checkDirection());
-		return;
-	}
-
-	// calculate new gradient to player pos
-
-	T _grad = (playerPos - getCenter()) / (playerPos - getCenter()).length(); 
-	if ( (grad * _grad) / 
-		 (grad.length() * _grad.length()) < 0.7 ) // if new grad diviates more than arccos(0.5)											  
-	{												// then direction will be changed
-		grad = _grad;
-		rotate(checkDirection());
-		return;  
-	}
-
-	if (it_is_corner())
-	{
-		rotate(checkDirection());
-		return;
+		chooseTimer = 20;
+		T _grad = (playerPos - getCenter()) / (playerPos - getCenter()).length();
+		
+		if (grad * _grad < 0.8 ) 
+			grad = _grad;
+		
+		if (decisionFlag)
+		{
+			decisionFlag = false;
+			rotate(checkDirection());
+		}
+		else
+		{
+			decisionFlag = true;
+			rotate( (rand() % 4) * 90 );
+		}
 	}
 }
 
@@ -143,8 +148,9 @@ int Ghost::checkDirection() const
 	// compute new direction
 	T _grad = grad;  // copy of gradient to player pos
 	int direction;   // temporary direction 
+	bool toGrad = true;
 
-	vector<int> dirs = { 0, 90, 180, 270 };  // list of posible directions
+	vector<int> dirs = { 0, 90, 180, 270 };  // list of posible directions (in radians)
 
 	for (int i = 0; i < 3; ++i)
 	{
@@ -152,35 +158,58 @@ int Ghost::checkDirection() const
 			if (_grad.x < 0)
 			{
 				direction = 180;
-				dirs.erase( dirs.begin() + 2 );
+				dirs.erase( find(dirs.begin(), dirs.end(), 180) );
 			}
 			else
 			{
 				direction = 0;
-				dirs.erase( dirs.begin() );
+				dirs.erase( find(dirs.begin(), dirs.end(), 0) );
 			}
 			_grad.x = 0;
 		}
-		else if (abs(_grad.x) > abs(_grad.y)) {
+		else if (abs(_grad.y) > abs(_grad.x)) 
+		{
 				if (_grad.y > 0)
 				{
 					direction = 90;
-					dirs.erase( dirs.begin() + 1 );
+					dirs.erase( find(dirs.begin(), dirs.end(), 90) );
 				}
 				else
 				{
 					direction = 270;
-					dirs.erase( dirs.begin() );
+					dirs.erase( find(dirs.begin(), dirs.end(), 270) );
 				}
 				_grad.y = 0;
-		} else {
-				int k = rand() % 2;
-				direction = dirs[k];
-				dirs.erase( dirs.begin() + k );
+		} 
+		else 
+		{
+			toGrad = false;
+			T v1(cos(dirs[0] * 3.14 / 180), sin(dirs[0] * 3.14 / 180));
+			T v2(cos(dirs[1] * 3.14 / 180), sin(dirs[1] * 3.14 / 180));
+
+			if ( (v1 * grad) / (v2 * grad) < 1 ) 
+			{
+				direction = dirs[1];
+				dirs.erase( dirs.begin() + 1 );
+			}
+			else 
+			{
+				direction = dirs[0];
+				dirs.erase( dirs.begin() );
+			}				
 		}
 
 		if (canMove(direction)) {
-			return direction;
+			if ( toGrad || direction != lastDir )
+			{
+				return direction;
+			}
+			else {
+				if (canMove(dirs[0]))
+					return dirs[0];
+				else
+					return direction;
+			}
 		}
 	}
 	return dirs[0];
@@ -188,11 +217,9 @@ int Ghost::checkDirection() const
 
 bool Ghost::it_is_corner() const
 {
-	int k = 0;
-	for (int i = 0; i < 4; ++i) {
-		if (canMove(90 * i))
-			++k;
-		if (k > 2) return true;
-	}
+	
+
+	if ( canMove( (direction + 90)%360 ) ) return true;
+	if ( canMove( (direction + 270)%360 ) ) return true;
 	return false;
 }

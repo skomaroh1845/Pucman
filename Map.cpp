@@ -45,7 +45,6 @@ void Map::loadMap(const char* path)
     }
     f.close();
     loaded = true;
-    cout << "Lvl map is loaded." << endl;
 }
 
 void Map::mapInit()
@@ -78,16 +77,14 @@ void Map::mapInit()
                     coins.push_back(coin);
                     ++numCoins;
 
-                    if (rand() % 100 == 1) {           // Get random spawn coordinates
+                    if (rand() % 50 == 1) {           // Get random spawn coordinates
                         creatureSpawn.push_back(T(x, y)); 
                     }
                 }
             }
         }
-    }
-
-    std::cout << "Map was successfully initialized." << std::endl;
-    
+    } 
+    numGhosts = creatureSpawn.size() - 1;
 }
 
 void Map::print() const
@@ -143,8 +140,8 @@ vector<DrawingObject*>& Map::getCoinsGroup()
 
 void Map::updateCreaturesView(const vector<Creature*>& creatures) const
 {
-    float lookY = 1.7 * walls[0]->getSizeY();
-    float lookX = 1.7 * walls[0]->getSizeX();
+    float lookY = 1.75 * walls[0]->getSizeY();
+    float lookX = 1.75 * walls[0]->getSizeX();
 
     for (Creature* Cr : creatures) {
         for (int i = 0; i < 4; ++i) {
