@@ -4,12 +4,11 @@ T Ghost::playerPos = T(0, 0);
 
 Ghost::Ghost(const T& center, float size, float r, float g, float b) : 
 		head(center, size, r, g, b), body(T(center.x, center.y - size/4), size*2, size/2, r, g, b),
-		skirtFlag(rand() % 2), animationTimer(25)
+		skirtFlag(rand() % 2), animationTimer(25), grad(T(-1, 1))
 {
 	speed = 0.7;
 	direction = 0;
 	this->size = size;
-	distToWall = size * 1.3;
 	setColor(r, g, b);
 	setCenter(center);
 
@@ -113,21 +112,44 @@ void Ghost::animate(float speed)
 	}
 }
 
-void Ghost::getPlayerPos(const Pucman& P)
+void Ghost::chooseDirection()
 {
-	playerPos = P.getCenter();
+	if (!canMove(direction)) 
+	{
+		rotate(checkDirection());
+		return;
+	}
+
+	// calculate new gradient to player pos
+
+	T _grad = (playerPos - getCenter()) / (playerPos - getCenter()).length(); 
+	if ( (grad * _grad) / 
+		 (grad.length() * _grad.length()) < 0.7 ) // if new grad diviates more than arccos(0.5)											  
+	{												// then direction will be changed
+		grad = _grad;
+		rotate(checkDirection());
+		return;  
+	}
+
+	if (it_is_corner())
+	{
+		rotate(checkDirection());
+		return;
+	}
 }
 
-void Ghost::chooseDirection(const vector<Wall*>& objs)
+int Ghost::checkDirection() const
 {
-	T grad = (playerPos - getCenter()) / (playerPos - getCenter()).length();
+	// compute new direction
+	T _grad = grad;  // copy of gradient to player pos
+	int direction;   // temporary direction 
 
-	vector<int> dirs = { 0, 90, 180, 270 };
+	vector<int> dirs = { 0, 90, 180, 270 };  // list of posible directions
 
 	for (int i = 0; i < 3; ++i)
 	{
-		if (abs(grad.x) > abs(grad.y)) {
-			if (grad.x < 0)
+		if (abs(_grad.x) > abs(_grad.y)) {
+			if (_grad.x < 0)
 			{
 				direction = 180;
 				dirs.erase( dirs.begin() + 2 );
@@ -137,24 +159,40 @@ void Ghost::chooseDirection(const vector<Wall*>& objs)
 				direction = 0;
 				dirs.erase( dirs.begin() );
 			}
-			grad.x = 0;
+			_grad.x = 0;
 		}
-		else 
-		if (abs(grad.x) > abs(grad.y)) {
-			if (grad.y > 0)
-			{
-				direction = 90;
-				dirs.erase( dirs.begin() + 1 );
-			}
-			else
-			{
-				direction = 270;
-				dirs.erase( dirs.begin() );
-			}
-			grad.y = 0;
+		else if (abs(_grad.x) > abs(_grad.y)) {
+				if (_grad.y > 0)
+				{
+					direction = 90;
+					dirs.erase( dirs.begin() + 1 );
+				}
+				else
+				{
+					direction = 270;
+					dirs.erase( dirs.begin() );
+				}
+				_grad.y = 0;
+		} else {
+				int k = rand() % 2;
+				direction = dirs[k];
+				dirs.erase( dirs.begin() + k );
 		}
-		else {
-			direction = dirs[rand() % 2];
+
+		if (canMove(direction)) {
+			return direction;
 		}
 	}
+	return dirs[0];
+}
+
+bool Ghost::it_is_corner() const
+{
+	int k = 0;
+	for (int i = 0; i < 4; ++i) {
+		if (canMove(90 * i))
+			++k;
+		if (k > 2) return true;
+	}
+	return false;
 }

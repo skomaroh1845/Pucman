@@ -4,7 +4,6 @@
 #include "Creature.h"
 #include "Pucman.h"
 #include "Wall.h"
-#include <vector>
 
 // Enemy class
 class Ghost : 
@@ -19,10 +18,12 @@ class Ghost :
 	bool skirtFlag;
 	int animationTimer;
 
-	static T playerPos;
+	T grad;  // gradient to player position
 
 public:
 
+	static T playerPos;
+	
 	Ghost() = delete;
 
 	Ghost(const T& center, float size, float r = 1, float g = 1, float b = 1);
@@ -37,8 +38,14 @@ public:
 
 	void animate(float speed = 1) override;
 
-	static void getPlayerPos(const Pucman& P);
+	static void getPlayerPos(T& center);
 
-	void chooseDirection(const vector<Wall*>& objs);
+	void chooseDirection();
+
+private:
+
+	int checkDirection() const;  // return direction for move
+
+	bool it_is_corner() const;
 };
 

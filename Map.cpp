@@ -86,9 +86,7 @@ void Map::mapInit()
         }
     }
 
-    std::cout << "Map was successfully initialized. Number of walls is " << walls.size() <<
-                 ". Number of coins is " << numCoins << std::endl;
-    std::cout << creatureSpawn.size() << std::endl;
+    std::cout << "Map was successfully initialized." << std::endl;
     
 }
 
@@ -130,7 +128,7 @@ T Map::getSpawn(int spawnNum)
 
 float Map::getSize() const
 {
-    return float(sizeX) / 64.0 * 0.8;
+    return min(float(sizeX) / 64.0, float(sizeY) / 34.0) * 0.8;
 }
 
 vector<Wall*>& Map::getWallsGroup()
@@ -141,4 +139,29 @@ vector<Wall*>& Map::getWallsGroup()
 vector<DrawingObject*>& Map::getCoinsGroup()
 {
     return coins;
+}
+
+void Map::updateCreaturesView(const vector<Creature*>& creatures) const
+{
+    float lookY = 1.7 * walls[0]->getSizeY();
+    float lookX = 1.7 * walls[0]->getSizeX();
+
+    for (Creature* Cr : creatures) {
+        for (int i = 0; i < 4; ++i) {
+            for (int j = 0; j < 4; ++j)
+                Cr->view[i][j] = 0;
+        }
+    }
+
+    for (const Wall* wall : walls) 
+    {
+        for (Creature* Cr : creatures)
+        {
+            if (abs(wall->getCenter().x - Cr->getCenter().x) > lookX ||
+                abs(wall->getCenter().y - Cr->getCenter().y) > lookY)
+                continue;
+
+            Cr->updateView(wall);
+        }      
+    }
 }

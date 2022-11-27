@@ -3,6 +3,7 @@
 #include <vector>
 #include "../Primitives/DrawingObject.h"
 #include "Wall.h"
+#include "Creature.h"
 
 using namespace std;
 
@@ -42,5 +43,7 @@ public:
 	vector<Wall*>& getWallsGroup();
 
 	vector<DrawingObject*>& getCoinsGroup();
+
+	void updateCreaturesView(const vector<Creature*>& Creatures) const;
 };
 

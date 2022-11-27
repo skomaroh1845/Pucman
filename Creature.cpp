@@ -6,49 +6,71 @@
 
 using namespace std;
 
-bool Creature::canMove(const vector<Wall*>& objs) const
+void Creature::updateView(const Wall* wall)
 {
-	for (Wall* el : objs) {
+	auto chooseLine = [](const Wall* wall, float y) {
 
-		if ((el->getCenter() - getCenter()).length() > distToWall * 2) continue;
-
-		if (direction == 0 &&                        // move right
-			el->getCenter().x > getCenter().x + el->getSizeX() / 2 + size &&     // check walls which are righter
-			abs(el->getCenter().y - getCenter().y) < el->getSizeY() / 2 + size &&  // check walls on the same height
-			el->getCenter().x - getCenter().x < el->getSizeX() / 2 + distToWall) // check how far are they
+		if (wall->getCenter().y > y) 
 		{
-			return false;
+			if (wall->getCenter().y > y + wall->getSizeY() * 1.2)
+				return 0;
+			else
+				return 1;
 		}
-		else if (direction == 180 &&
-				el->getCenter().x + el->getSizeX() / 2 + size < getCenter().x &&
-				abs(el->getCenter().y - getCenter().y) < el->getSizeY() / 2 + size &&
-				getCenter().x - el->getCenter().x < el->getSizeX() / 2 + distToWall)
+		else
 		{
-			return false;
+			if (wall->getCenter().y < y - wall->getSizeY() * 1.2)
+				return 3;
+			else
+				return 2;
 		}
-		else if (direction == 90 &&
-				el->getCenter().y > getCenter().y + el->getSizeY() / 2 + size &&
-				abs(el->getCenter().x - getCenter().x) < el->getSizeX() / 2 + size &&
-				el->getCenter().y - getCenter().y < el->getSizeY() / 2 + distToWall)
-		{
-			return false;
-		}
-		else if (direction == 270 &&
-				el->getCenter().y + el->getSizeY() / 2 + size < getCenter().y &&
-				abs(el->getCenter().x - getCenter().x) < el->getSizeX() / 2 + size &&
-				getCenter().y - el->getCenter().y < el->getSizeY() / 2 + distToWall)
-		{
-			return false;
-		}
+	};
+	
+	if (wall->getCenter().x < getCenter().x)  // 3 col
+	{
+		if (wall->getCenter().x < getCenter().x - wall->getSizeX() * 1.2)
+			view[chooseLine(wall, getCenter().y)][0] = 1;
+		else
+			view[chooseLine(wall, getCenter().y)][1] = 1;
 	}
-	return true;
+	else
+	{
+		if (wall->getCenter().x > getCenter().x + wall->getSizeX() * 1.2)
+			view[chooseLine(wall, getCenter().y)][3] = 1;
+		else
+			view[chooseLine(wall, getCenter().y)][2] = 1;
+	}
+}
+
+bool Creature::canMove(int direction) const
+{	
+	if (direction == 0) 
+	{
+		if (view[1][3] || view[2][3])  // true = wall is seen
+			return false;
+		return true;
+	} 
+	else if (direction == 180) 
+	{
+		if (view[1][0] || view[2][0])  // true = wall is seen
+			return false;
+		return true;
+	} 
+	else if (direction == 90) 
+	{
+		if (view[0][1] || view[0][2])  // true = wall is seen
+			return false;
+		return true;
+	}
+	else 
+	{
+		if (view[3][1] || view[3][2])  // true = wall is seen
+			return false;
+		return true;
+	}
 }
 
 void Creature::move()
 {
 	moveBy(speed * cos(direction * 3.14 / 180), speed * sin(direction * 3.14 / 180));
-}
-
-void Creature::moveBy(double x, double y)
-{
 }

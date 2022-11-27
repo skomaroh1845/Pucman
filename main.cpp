@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <glut.h>
 #include <Windows.h>
+#include <algorithm>
 
 #include "Map.h"
 #include "Pucman.h"
@@ -11,8 +12,7 @@
 
 // Global variables  
 Map* pMap;
-Pucman* Player;
-Ghost* ghost;
+vector <Creature*> creatures;
 
 
 
@@ -21,51 +21,49 @@ void display() {
     // Screen cleaning
     glClear(GL_COLOR_BUFFER_BIT);
 
-
-    // Objects drawing
-    // ...
+    // Map
     pMap->print();
     pMap->animate();
-    
-    Player->print();
-    Player->animate();
-    
-    ghost->print();
-    ghost->animate();
+    pMap->updateCreaturesView(creatures);
 
+    // Player
+    creatures[0]->print();
+    creatures[0]->animate();
+    if (creatures[0]->canMove(creatures[0]->direction))
+        creatures[0]->move();
 
-    // Events managment
-    // ...
-    if ( Player->canMove(pMap->getWallsGroup()) )
-       Player->move();
+    // Ghosts
+   /* Ghost::playerPos = creatures[0]->getCenter();
 
+    for_each(creatures.begin()+1, creatures.end(),
+        [](Creature* el) {
+            el->print();
+            el->animate();
+            reinterpret_cast<Ghost*>(el)->chooseDirection();
+            if (el->canMove(el->direction))
+                el->move();
+        }
+    );   */ 
 
-    Ghost::getPlayerPos(*Player);
-    
-    //if ( ghost->canMove(pMap->getWallsGroup()) )
-    //    ghost->move();
-    //else
-    //    ghost->chooseDirection(pMap->getWallsGroup());
-    
-        
     // Keyboard clicks processing
     if (GetAsyncKeyState((unsigned short)'W')) {
-        Player->rotate(90);
-        //ghost->rotate(90);
+        creatures[0]->rotate(90);
     }
     if (GetAsyncKeyState((unsigned short)'A')) {
-        Player->rotate(180);
-        //ghost->rotate(180);
+        creatures[0]->rotate(180);
     }
     if (GetAsyncKeyState((unsigned short)'S')) {
-        Player->rotate(270);
-        //ghost->rotate(270);
+        creatures[0]->rotate(270);
     }
     if (GetAsyncKeyState((unsigned short)'D')) {
-        Player->rotate(0);
-        //ghost->rotate(0);
+        creatures[0]->rotate(0);
     }
     if (GetAsyncKeyState((unsigned short)'\x1b')) {
+        for_each(creatures.begin(), creatures.end(),
+            [](Creature* el) {
+                delete el;
+            }
+        );
         exit(0);
     }
     if (GetAsyncKeyState(VK_LBUTTON)) {
@@ -97,15 +95,17 @@ int main(int argc, char* argv[])
     if (!gameMap.is_loaded()) return 1;
     gameMap.mapInit();
     pMap = &gameMap;
+
     // Player 
     srand(time(0));
-    Pucman user(gameMap.getSpawn(rand()), gameMap.getSize());
-    Player = &user;
-    // Ghost
-    Ghost::getPlayerPos(user);
-    Ghost enemy(gameMap.getSpawn(rand()), gameMap.getSize(), 1, 0, 0);
-    ghost = &enemy;
-    
+    Pucman* user = new Pucman(gameMap.getSpawn(rand()), gameMap.getSize());
+    creatures.push_back(user);
+    // Ghosts
+    for (int i = 0; i < 1; ++i)
+    {
+        Ghost* enemy = new Ghost(gameMap.getSpawn(rand()), gameMap.getSize(), 1, 0, 0);
+        creatures.push_back(enemy);
+    }
 
     // glut init
     glutInit(&argc, argv); 

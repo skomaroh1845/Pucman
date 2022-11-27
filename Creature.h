@@ -10,19 +10,23 @@ using namespace std;
 class Creature :
     public DrawingObject
 {
- public:   
-     
-    int direction;  // in degrees
+protected:
 
     float speed;   // px per tick
 
-    float distToWall; //
+    float size;
 
-    float size;  
+ public:
 
-    bool canMove(const vector<Wall*>& objs) const;
+    bool view[4][4];  
+     
+    int direction;  // in degrees
+
+    bool canMove(int direction) const;
 
     void move();
 
-    void moveBy(double x, double y) override;
+    virtual void moveBy(double x, double y) = 0;
+
+    void updateView(const Wall* wall);
 };

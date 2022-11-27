@@ -14,7 +14,6 @@ Pucman::Pucman(const T& center, float size) : score(0), lives(3),
 	setCenter(center);
 	direction = 0;
 	speed = 1;
-	distToWall = size * 1.3;
 	this->size = size;
 }
 
@@ -31,6 +30,7 @@ void Pucman::moveBy(double x, double y)
 	mouth.moveBy(x, y);
 	eye.moveBy(x, y);
 	setCenter( T( getCenter().x + x, getCenter().y + y ) );
+	//cout << "center: " << getCenter() << endl;
 }
 
 void Pucman::moveTo(double x, double y)
