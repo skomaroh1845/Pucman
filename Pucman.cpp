@@ -13,6 +13,7 @@ Pucman::Pucman(const T& center, float size) : lives(3),
 {
 	setCenter(center);
 	direction = 0;
+	turnDirection = 0;
 	speed = 1;
 	this->size = size;
 }
@@ -68,6 +69,17 @@ void Pucman::animate(float speed)
 		angle -= speed * 2;
 		if (angle < speed * 2) mouth_open = true;
 	}
+}
+
+void Pucman::setTurnDirection(int direction)
+{
+	turnDirection = direction;
+}
+
+void Pucman::turn()
+{
+	if (direction != turnDirection && canMove(turnDirection))
+		rotate(turnDirection);
 }
 
 void Pucman::death()

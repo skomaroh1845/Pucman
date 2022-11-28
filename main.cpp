@@ -32,6 +32,7 @@ void display() {
     creatures[0]->animate();
     if (creatures[0]->canMove(creatures[0]->direction))
         creatures[0]->move();
+    reinterpret_cast<Pucman*>(creatures[0])->turn();
 
     // Ghosts
     Ghost::playerPos = creatures[0]->getCenter();
@@ -48,16 +49,16 @@ void display() {
 
     // Keyboard clicks processing
     if (GetAsyncKeyState((unsigned short)'W')) {
-        creatures[0]->rotate(90);
+        reinterpret_cast<Pucman*>(creatures[0])->setTurnDirection(90);
     }
     if (GetAsyncKeyState((unsigned short)'A')) {
-        creatures[0]->rotate(180);
+        reinterpret_cast<Pucman*>(creatures[0])->setTurnDirection(180);
     }
     if (GetAsyncKeyState((unsigned short)'S')) {
-        creatures[0]->rotate(270);
+        reinterpret_cast<Pucman*>(creatures[0])->setTurnDirection(270);
     }
     if (GetAsyncKeyState((unsigned short)'D')) {
-        creatures[0]->rotate(0);
+        reinterpret_cast<Pucman*>(creatures[0])->setTurnDirection(0);
     }
     if (GetAsyncKeyState((unsigned short)'\x1b')) {
         for_each(creatures.begin(), creatures.end(),

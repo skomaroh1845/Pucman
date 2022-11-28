@@ -16,9 +16,12 @@ class Pucman:
 	float angle;  // used for animation
 	bool mouth_open; 
 
-	int lives;	
+	int lives;
+
+	int turnDirection;
 
 public:
+
 	Pucman(const T& center, float size);
 
 	void print() const override;
@@ -31,6 +34,10 @@ public:
 
 	void animate(float speed = 1) override;
 	
+	void setTurnDirection(int direction);
+
+	void turn();
+
 	void death();
 };
 
