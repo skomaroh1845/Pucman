@@ -18,6 +18,8 @@ class Map final
 
 	vector<Wall*> walls;  // walls and coins
 	vector<DrawingObject*> coins;
+
+	int score;
 	
 public:
 	int numCoins;
@@ -47,5 +49,8 @@ public:
 	vector<DrawingObject*>& getCoinsGroup();
 
 	void updateCreaturesView(const vector<Creature*>& Creatures) const;
+
+	void updateCoins(const T& playerPos);
+
 };
 

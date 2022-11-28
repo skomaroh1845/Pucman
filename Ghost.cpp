@@ -130,7 +130,7 @@ void Ghost::chooseDirection()
 		if (grad * _grad < 0.8 ) 
 			grad = _grad;
 		
-		if (decisionFlag)
+		if (decisionFlag && brainMod)
 		{
 			decisionFlag = false;
 			rotate(checkDirection());

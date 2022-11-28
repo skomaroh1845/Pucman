@@ -25,6 +25,7 @@ void display() {
     pMap->print();
     pMap->animate();
     pMap->updateCreaturesView(creatures);
+    pMap->updateCoins(creatures[0]->getCenter());
 
     // Player
     creatures[0]->print();

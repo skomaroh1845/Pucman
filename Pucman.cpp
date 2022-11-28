@@ -7,7 +7,7 @@
 using namespace std;
 
 
-Pucman::Pucman(const T& center, float size) : score(0), lives(3),
+Pucman::Pucman(const T& center, float size) : lives(3),
 		body(circle(center, size, 1, 1, 0)), eye(circle(T(center.x, center.y + size/2), size/5, 0, 0, 0)),
 		mouth(circle(center, size, 0, 0, 0)), angle(45), mouth_open(false)
 {

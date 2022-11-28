@@ -16,7 +16,6 @@ class Pucman:
 	float angle;  // used for animation
 	bool mouth_open; 
 
-	int score;
 	int lives;	
 
 public:

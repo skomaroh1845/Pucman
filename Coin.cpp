@@ -5,6 +5,7 @@ Coin::Coin(const T& center, float R, bool up) : center(center), R(R),
 {
 	C[0] = circle(center, R, 0.6, 0.7, 0);
 	C[1] = circle(center, R * 0.7, 0.5, 0.4, 0);
+	setCenter(center);
 }
 
 void Coin::print() const

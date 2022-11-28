@@ -9,7 +9,7 @@
 #include <algorithm>
 
 
-Map::Map(int sizeX, int sizeY) : loaded(false), sizeX(sizeX), sizeY(sizeY), numCoins(0)
+Map::Map(int sizeX, int sizeY) : loaded(false), sizeX(sizeX), sizeY(sizeY), numCoins(0), score(0)
 {
 }
 
@@ -161,4 +161,22 @@ void Map::updateCreaturesView(const vector<Creature*>& creatures) const
             Cr->updateView(wall);
         }      
     }
+}
+
+void Map::updateCoins(const T& playerPos)
+{
+    int k = -1;
+
+    for (int i = 0; i < coins.size(); ++i) {
+        if ( (coins[i]->getCenter() - playerPos).length() < getSize() * 2 / 3)
+        {
+            ++score;
+            cout << score << endl;
+            k = i;
+            break;
+        }
+    }
+
+    if (k > -1)
+        coins.erase(coins.begin() + k);
 }
