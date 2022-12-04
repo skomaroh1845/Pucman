@@ -9,7 +9,11 @@ class Interface
 	float scrW, scrH;  // screen size
 	
 public:
+	static bool interfaceOn;
 	static bool pauseOn;
+	static bool menuOn;
+	static bool winOn;
+	static bool lossOn;
 	
 	Interface(int screen_w, int screen_h, int scrW = 1920, int scrH = 1080);
 
@@ -19,7 +23,7 @@ public:
 
 	void PrintWin(float mouse_x, float mouse_y) const;
 
-	void PrintLose(float mouse_x, float mouse_y) const;
+	void PrintLoss(float mouse_x, float mouse_y) const;
 	
 private:
 	

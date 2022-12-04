@@ -15,7 +15,7 @@
 
 // Global variables  
 Map* pMap;
-Interface* gameInter;
+Interface* gameInterface;
 vector <Creature*> creatures;
 
 
@@ -35,15 +35,21 @@ void display() {
     pMap->updateCoins(creatures[0]->getCenter());
 
     // Player
-    creatures[0]->print();
-    creatures[0]->animate();
-    if (creatures[0]->canMove(creatures[0]->direction) && !Interface::pauseOn)
-        creatures[0]->move();
-    reinterpret_cast<Pucman*>(creatures[0])->turn();
+    if (!Interface::interfaceOn)
+    {
+        creatures[0]->print();
+        creatures[0]->animate();
+        if (creatures[0]->canMove(creatures[0]->direction) && !Interface::pauseOn)
+            creatures[0]->move();
+        reinterpret_cast<Pucman*>(creatures[0])->turn();
+    }
 
     // Ghosts
-    Ghost::playerPos = creatures[0]->getCenter();
-
+    if (Interface::interfaceOn)
+        Ghost::brainMod = false;  // random moving
+    else
+        Ghost::playerPos = creatures[0]->getCenter();
+    
     for_each(creatures.begin()+1, creatures.end(),
         [](Creature* el) {
             el->print();
@@ -72,11 +78,22 @@ void display() {
 
 
     // Interface 
-    if (Interface::pauseOn) 
+    if (Interface::interfaceOn)
     {
         POINT p;
         GetCursorPos(&p);
-        gameInter->PrintPause(p.x, p.y);
+        if (Interface::pauseOn) {
+            gameInterface->PrintPause(p.x, p.y);
+        }
+        if (Interface::menuOn) {
+            gameInterface->PrintMenu(p.x, p.y);
+        }
+        if (Interface::winOn) {
+            gameInterface->PrintWin(p.x, p.y);
+        }
+        if (Interface::lossOn) {
+            gameInterface->PrintLoss(p.x, p.y);
+        }
     }
 
     // Buffers swap
@@ -108,7 +125,7 @@ void KeyboardClick(unsigned char key, int x, int y) {
 
 // game timer func
 void timer(int = 0) {
-    display();
+    glutPostRedisplay();
     glutTimerFunc(20, timer, 0);
 }
 
@@ -118,8 +135,10 @@ int main(int argc, char* argv[])
 {
     // Game init //
     std::cout << "Game is started." << std::endl;
-    Interface gameInterface(W, H);
-    gameInter = &gameInterface;
+    Interface gameInter(W, H);
+    Interface::interfaceOn = true;
+    Interface::menuOn = true;
+    gameInterface = &gameInter;
 
     // Game map
     Map gameMap(W, H);

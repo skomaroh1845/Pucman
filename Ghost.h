@@ -25,7 +25,7 @@ class Ghost :
 	
 
 public:
-	bool brainMod;  // true = smart; false = random
+	static bool brainMod;  // true = smart; false = random
 
 	static T playerPos;
 	

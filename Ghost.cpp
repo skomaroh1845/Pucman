@@ -4,6 +4,7 @@
 
 using namespace std;
 
+bool Ghost::brainMod = true;
 T Ghost::playerPos = T(0, 0);
 
 Ghost::Ghost(const T& center, float size, float r, float g, float b) : 

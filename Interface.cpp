@@ -3,11 +3,32 @@
 #include <Windows.h>
 
 
+bool Interface::interfaceOn = false;
 bool Interface::pauseOn = false;
+bool Interface::menuOn = false;
+bool Interface::winOn = false;
+bool Interface::lossOn = false;
 
 Interface::Interface(int wind_w, int wind_h, int scrW, int scrH) : 
 			x(wind_w / 2), y(wind_h / 2), width(x), height(y), scrW(scrW), scrH(scrH)
 {
+}
+
+void Interface::PrintMenu(float mouse_x, float mouse_y) const
+{
+	// STATIC
+	// draw window rect 
+	glColor3f(1, 0, 0);
+	glRectf(x - width / 2, y - height / 2, x + width / 2, y + height / 2);
+
+	// draw header
+	PrintString(x - getStringLength("Menu", 40) / 2, y + 20, "Menu", 40, 0, 0, 0);
+
+
+	// INTERACTIVE
+	InteractiveString(x, y - 20, "Play", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+	InteractiveString(x, y - 50, "Exit", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+
 }
 
 void Interface::PrintPause(float mouse_x, float mouse_y) const
@@ -23,6 +44,40 @@ void Interface::PrintPause(float mouse_x, float mouse_y) const
 
 	// INTERACTIVE
 	InteractiveString(x, y - 20, "Continue", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+
+	InteractiveString(x, y - 50, "Menu", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+}
+
+void Interface::PrintWin(float mouse_x, float mouse_y) const
+{
+	// STATIC
+	// draw window rect 
+	glColor3f(1, 0, 0);
+	glRectf(x - width / 2, y - height / 2, x + width / 2, y + height / 2);
+
+	// draw header
+	PrintString(x - getStringLength("Win!", 40) / 2, y + 20, "Win!", 40, 0, 0, 0);
+
+
+	// INTERACTIVE
+	InteractiveString(x, y - 20, "New game", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+
+	InteractiveString(x, y - 50, "Menu", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+}
+
+void Interface::PrintLoss(float mouse_x, float mouse_y) const
+{
+	// STATIC
+	// draw window rect 
+	glColor3f(1, 0, 0);
+	glRectf(x - width / 2, y - height / 2, x + width / 2, y + height / 2);
+
+	// draw header
+	PrintString(x - getStringLength("Loss!", 40) / 2, y + 20, "Loss!", 40, 0, 0, 0);
+
+
+	// INTERACTIVE
+	InteractiveString(x, y - 20, "New game", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
 
 	InteractiveString(x, y - 50, "Menu", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
 }
