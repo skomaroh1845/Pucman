@@ -6,19 +6,26 @@
 #include "Map.h"
 #include "Pucman.h"
 #include "Ghost.h"
+#include "Interface.h"
 
 
+#define W 700    // window characteristics 
+#define H 500
 
 
 // Global variables  
 Map* pMap;
+Interface* gameInter;
 vector <Creature*> creatures;
 
 
 
 // Main game loop
 void display() {
-    // Screen cleaning
+    // glut staff
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, W, 0, H, -1, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Map
@@ -30,7 +37,7 @@ void display() {
     // Player
     creatures[0]->print();
     creatures[0]->animate();
-    if (creatures[0]->canMove(creatures[0]->direction))
+    if (creatures[0]->canMove(creatures[0]->direction) && !Interface::pauseOn)
         creatures[0]->move();
     reinterpret_cast<Pucman*>(creatures[0])->turn();
 
@@ -42,7 +49,7 @@ void display() {
             el->print();
             el->animate();
             reinterpret_cast<Ghost*>(el)->chooseDirection();
-            if (el->canMove(el->direction))
+            if (el->canMove(el->direction) && !Interface::pauseOn)
                 el->move();
         }
     );    
@@ -60,21 +67,41 @@ void display() {
     if (GetAsyncKeyState((unsigned short)'D')) {
         reinterpret_cast<Pucman*>(creatures[0])->setTurnDirection(0);
     }
-    if (GetAsyncKeyState((unsigned short)'\x1b')) {
+    if (GetAsyncKeyState(VK_LBUTTON)) {
+    }
+
+
+    // Interface 
+    if (Interface::pauseOn) 
+    {
+        POINT p;
+        GetCursorPos(&p);
+        gameInter->PrintPause(p.x, p.y);
+    }
+
+    // Buffers swap
+    glutSwapBuffers();
+}
+
+
+void KeyboardClick(unsigned char key, int x, int y) {
+    
+    if (key == ' ') 
+    {
+        if (Interface::pauseOn)
+            Interface::pauseOn = false;
+        else
+            Interface::pauseOn = true;
+    }
+    if (key == '\x1b') {
         for_each(creatures.begin(), creatures.end(),
             [](Creature* el) {
                 delete el;
             }
         );
+        cout << "Game finished." << endl;
         exit(0);
     }
-    if (GetAsyncKeyState(VK_LBUTTON)) {
-        POINT p;
-        GetCursorPos(&p);
-    }
-
-    // Buffers swap
-    glutSwapBuffers();
 }
 
 
@@ -91,8 +118,11 @@ int main(int argc, char* argv[])
 {
     // Game init //
     std::cout << "Game is started." << std::endl;
+    Interface gameInterface(W, H);
+    gameInter = &gameInterface;
+
     // Game map
-    Map gameMap(700, 500);
+    Map gameMap(W, H);
     gameMap.loadMap("Level1.txt");
     if (!gameMap.is_loaded()) return 1;
     gameMap.mapInit();
@@ -113,15 +143,14 @@ int main(int argc, char* argv[])
     // glut init
     glutInit(&argc, argv); 
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(700, 500);
-    glutInitWindowPosition(960 - 700 / 2, 540 - 500 / 2);
+    glutInitWindowSize(W, H);
+    glutInitWindowPosition(960 - W / 2, 540 - H / 2);
     glutCreateWindow("Powered by Primitives");
     glClearColor(0.0, 0.0, 0.0, 1.0);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0, 700, 0, 500, -1, 1);
-    //glutFullScreen();
+
+    glutFullScreen();
     glutDisplayFunc(display);
+    glutKeyboardFunc(KeyboardClick);
 
     // Enter in game loop
     timer(0);

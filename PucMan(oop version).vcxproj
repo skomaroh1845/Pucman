@@ -25,6 +25,7 @@
     <ClInclude Include="Coin.h" />
     <ClInclude Include="Creature.h" />
     <ClInclude Include="Ghost.h" />
+    <ClInclude Include="Interface.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Pucman.h" />
     <ClInclude Include="Wall.h" />
@@ -38,6 +39,7 @@
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Ghost.cpp" />
+    <ClCompile Include="Interface.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Pucman.cpp" />

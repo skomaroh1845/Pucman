@@ -50,6 +50,8 @@ void Map::loadMap(const char* path)
 void Map::mapInit()
 {
     // Here is you need to interpret symbols as objects like 'walls' or 'coins' 
+    int InterfaceSize = 40;  // height of line with game statistics 
+    sizeY -= InterfaceSize;
     float blockSizeX = float(sizeX) / 64.0;
     float blockSizeY = float(sizeY) / 34.0;
 
