@@ -39,7 +39,11 @@ void display() {
     pMap->print();
     pMap->animate();
     pMap->updateCreaturesView(creatures);
-    pMap->updateCoins(creatures[0]->getCenter());
+    if (!Interface::menuOn) {
+        pMap->updateCoins(creatures[0]->getCenter());
+    }
+    gameInterface->printStatistic(pMap->score,
+                                  pMap->lives);
 
     // Player
     if (!Interface::menuOn)
@@ -107,6 +111,7 @@ void keyboardClick(unsigned char key, int x, int y) {
     
     if (key == '\x1b')
     {
+        if (Interface::menuOn) return;
         if (Interface::pauseOn)
         {
             Interface::interfaceOn = false;

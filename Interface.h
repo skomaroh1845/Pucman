@@ -27,6 +27,8 @@ public:
 	void Win(float mouse_x, float mouse_y) const;
 
 	void Loss(float mouse_x, float mouse_y) const;
+
+	void printStatistic(int score, int lives) const;
 	
 private:
 	

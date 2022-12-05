@@ -1,6 +1,9 @@
 #include "Interface.h"
+#include "Pucman.h"
+
 #include <glut.h>
 #include <Windows.h>
+#include <string>
 
 
 bool Interface::interfaceOn = false;
@@ -23,7 +26,7 @@ void Interface::Menu(float mouse_x, float mouse_y) const
 {
 	// STATIC
 	// draw window rect 
-	glColor3f(1, 0, 0);
+	glColor3f(0.8, 0, 0);
 	glRectf(x - width / 2, y - height / 2, x + width / 2, y + height / 2);
 
 	// draw header
@@ -134,6 +137,23 @@ void Interface::Loss(float mouse_x, float mouse_y) const
 	mouseClick = false;
 }
 
+void Interface::printStatistic(int score, int lives) const
+{
+	float pos = 20;
+	PrintString(pos, (y*2) - 25, "Level 1", 20, 0.8, 0.8, 0.8);	// (y * 2) = maxY
+	pos += getStringLength("Level 1", 30) + 300;
+	PrintString(pos, (y * 2) - 25, "Score: ", 20, 0.8, 0.8, 0.8);
+	pos += getStringLength("Score: ", 20);
+	PrintNum(pos, (y * 2) - 25, score, 20, 0.8, 0.8, 0.8);
+
+	Pucman p(T(x*2 - 30, y*2 - 15), 10);
+	for (int i = 0; i < lives; ++i)
+	{
+		p.print();
+		p.moveBy(-30, 0);
+	}
+}
+
 void Interface::PrintString(float x, float y, const char* string, float size, float r, float g, float b) const
 {
 	glPushMatrix();
@@ -180,15 +200,7 @@ bool Interface::InteractiveString(float x, float y, const char* string, float si
 
 void Interface::PrintNum(float x, float y, int num, float size, float r, float g, float b) const
 {
-	char str[10] = {'\0'};
-	int i = 9;
-	while (i >= 0) {
-		str[i] = char(num % 10);
-		--i;
-		num = num / 10;
-	}
-
-	PrintString(x, y, str + i + 1, size, r, g, b);
+	PrintString(x, y, std::to_string(num).c_str(), size, r, g, b);
 }
 
 std::tuple<float, float, float, float> Interface::getStringRect(float x, float y, const char* string, float size) const

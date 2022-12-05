@@ -9,7 +9,7 @@
 #include <algorithm>
 
 
-Map::Map(int sizeX, int sizeY) : loaded(false), sizeX(sizeX), sizeY(sizeY * 0.92), 
+Map::Map(int sizeX, int sizeY) : loaded(false), sizeX(sizeX), sizeY(sizeY * 0.94), 
                                  numCoins(0), score(0)
 {
 }
@@ -64,6 +64,7 @@ void Map::mapInit()
         score = 0;
     }
     if (creatureSpawn.size() > 0) creatureSpawn.clear();
+    lives = 3;
     
     // Here is you need to interpret symbols as objects like 'walls' or 'coins' 
     float blockSizeX = float(sizeX) / 64.0;

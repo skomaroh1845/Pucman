@@ -22,6 +22,8 @@ class Map final
 public:
 	
 	int score;
+
+	int lives;
 	
 	int numCoins;
 
