@@ -17,6 +17,8 @@
 Map* pMap;                      // pointer to game map obj
 Interface* gameInterface;       // pointer to game interface obj
 vector <Creature*> creatures;   // there are all game creatures - player and ghosts
+int MAX_SCORE;
+
 
 // Game function list
 void display();
@@ -46,13 +48,24 @@ void display() {
                                   pMap->lives);
 
     // Player
-    if (!Interface::menuOn)
+    if ( !Interface::menuOn && pMap->lives > 0 )
     {
         creatures[0]->print();
         creatures[0]->animate();
         if (creatures[0]->canMove(creatures[0]->direction) && !Interface::interfaceOn)
             creatures[0]->move();
         reinterpret_cast<Pucman*>(creatures[0])->turn();
+    }
+    if (pMap->lives == 0) {
+        if (reinterpret_cast<Pucman*>(creatures[0])->death()) 
+        {
+            Interface::interfaceOn = true;
+            Interface::lossOn = true;
+        }
+    }
+    if (pMap->score == MAX_SCORE) {
+        Interface::interfaceOn = true;
+        Interface::winOn = true;
     }
 
     // Ghosts
@@ -68,8 +81,11 @@ void display() {
             el->print();
             el->animate();
             reinterpret_cast<Ghost*>(el)->chooseDirection();
-            if (el->canMove(el->direction) && !Interface::pauseOn)
+            if ( el->canMove(el->direction) && 
+                 !Interface::pauseOn && !Interface::winOn ) 
+            {
                 el->move();
+            }
         }
     );    
 
@@ -167,6 +183,7 @@ void initGame()
 {
     // Map
     pMap->mapInit();
+    MAX_SCORE = pMap->getCoinsGroup().size();  // set amount of coins
     
     // clear creature vector if it has something
     if (creatures.size() > 0) {    

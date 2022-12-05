@@ -53,7 +53,7 @@ void Interface::Pause(float mouse_x, float mouse_y) const
 {
 	// STATIC
 	// draw window rect 
-	glColor3f(1, 0, 0);
+	glColor3f(0.8, 0, 0);
 	glRectf(x - width / 2, y - height / 2, x + width / 2, y + height / 2);
 
 	// draw header
@@ -86,7 +86,7 @@ void Interface::Win(float mouse_x, float mouse_y) const
 {
 	// STATIC
 	// draw window rect 
-	glColor3f(1, 0, 0);
+	glColor3f(0.8, 0, 0);
 	glRectf(x - width / 2, y - height / 2, x + width / 2, y + height / 2);
 
 	// draw header
@@ -114,7 +114,7 @@ void Interface::Loss(float mouse_x, float mouse_y) const
 {
 	// STATIC
 	// draw window rect 
-	glColor3f(1, 0, 0);
+	glColor3f(0.8, 0, 0);
 	glRectf(x - width / 2, y - height / 2, x + width / 2, y + height / 2);
 
 	// draw header

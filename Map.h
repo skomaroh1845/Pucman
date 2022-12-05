@@ -51,7 +51,7 @@ public:
 
 	vector<DrawingObject*>& getCoinsGroup();
 
-	void updateCreaturesView(const vector<Creature*>& Creatures) const;
+	void updateCreaturesView(const vector<Creature*>& Creatures) ;
 
 	void updateCoins(const T& playerPos);
 

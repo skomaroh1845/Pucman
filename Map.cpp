@@ -3,6 +3,7 @@
 #include "../Primitives/Vector2D.h"
 #include "Coin.h"
 #include "Wall.h"
+#include "Pucman.h"
 
 #include <fstream>
 #include <iostream>
@@ -155,7 +156,7 @@ vector<DrawingObject*>& Map::getCoinsGroup()
     return coins;
 }
 
-void Map::updateCreaturesView(const vector<Creature*>& creatures) const
+void Map::updateCreaturesView(const vector<Creature*>& creatures)
 {
     float lookY = 1.75 * walls[0]->getSizeY();
     float lookX = 1.75 * walls[0]->getSizeX();
@@ -177,6 +178,18 @@ void Map::updateCreaturesView(const vector<Creature*>& creatures) const
 
             Cr->updateView(wall);
         }      
+    }
+
+    if (reinterpret_cast<Pucman*>(creatures[0])->canTakeDamage())
+    {
+        for (int i = 1; i < creatures.size(); ++i) {
+            if ((creatures[i]->getCenter() - creatures[0]->getCenter()).length() < getSize())
+            {
+                if (lives > 0) --lives;
+                reinterpret_cast<Pucman*>(creatures[0])->takeDamage();
+                break;
+            }
+        }
     }
 }
 
