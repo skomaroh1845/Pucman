@@ -8,13 +8,18 @@ bool Interface::pauseOn = false;
 bool Interface::menuOn = false;
 bool Interface::winOn = false;
 bool Interface::lossOn = false;
+bool Interface::exit = false;
+bool Interface::startGame = false;
+bool Interface::mouseClick = false;
 
 Interface::Interface(int wind_w, int wind_h, int scrW, int scrH) : 
-			x(wind_w / 2), y(wind_h / 2), width(x), height(y), scrW(scrW), scrH(scrH)
+			x(wind_w / 2), y(wind_h / 2), width(x * 0.8), height(y * 0.8), scrW(scrW), scrH(scrH)
 {
+	interfaceOn = true;
+	menuOn = true;
 }
 
-void Interface::PrintMenu(float mouse_x, float mouse_y) const
+void Interface::Menu(float mouse_x, float mouse_y) const
 {
 	// STATIC
 	// draw window rect 
@@ -24,31 +29,57 @@ void Interface::PrintMenu(float mouse_x, float mouse_y) const
 	// draw header
 	PrintString(x - getStringLength("Menu", 40) / 2, y + 20, "Menu", 40, 0, 0, 0);
 
-
 	// INTERACTIVE
-	InteractiveString(x, y - 20, "Play", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
-	InteractiveString(x, y - 50, "Exit", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
-
+	// draw buttons
+	bool mouseOnButton1 = InteractiveString(x, y - 20, "Play", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+	bool mouseOnButton2 = InteractiveString(x, y - 50, "Exit", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+	// processing clicks
+	if (mouseClick && mouseOnButton1) {
+		interfaceOn = false;
+		startGame = true;
+		menuOn = false;
+	}
+	if (mouseClick && mouseOnButton2) {
+		exit = true;
+		menuOn = false;
+	}
+	mouseClick = false;
 }
 
-void Interface::PrintPause(float mouse_x, float mouse_y) const
+void Interface::Pause(float mouse_x, float mouse_y) const
 {
 	// STATIC
 	// draw window rect 
 	glColor3f(1, 0, 0);
 	glRectf(x - width / 2, y - height / 2, x + width / 2, y + height / 2);
-	
-	// draw header
-	PrintString(x - getStringLength("Pause", 40) / 2, y + 20, "Pause", 40, 0, 0, 0);
 
+	// draw header
+	PrintString(x - getStringLength("Pause", 40) / 2, y + 30, "Pause", 40, 0, 0, 0);
 
 	// INTERACTIVE
-	InteractiveString(x, y - 20, "Continue", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
-
-	InteractiveString(x, y - 50, "Menu", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+	// draw buttons
+	bool mouseOnButton1 = InteractiveString(x, y - 40, "Continue", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+	bool mouseOnButton2 = InteractiveString(x, y - 70, "Menu", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+	bool mouseOnButton3 = InteractiveString(x, y - 10, "New game", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+	// processing clicks
+	if (mouseClick && mouseOnButton1) {
+		interfaceOn = false;
+		pauseOn = false;
+	}
+	if (mouseClick && mouseOnButton2) {
+		interfaceOn = true;
+		menuOn = true;
+		pauseOn = false;
+	}
+	if (mouseClick && mouseOnButton3) {
+		interfaceOn = false;
+		startGame = true;
+		pauseOn = false;
+	}
+	mouseClick = false;
 }
 
-void Interface::PrintWin(float mouse_x, float mouse_y) const
+void Interface::Win(float mouse_x, float mouse_y) const
 {
 	// STATIC
 	// draw window rect 
@@ -60,12 +91,23 @@ void Interface::PrintWin(float mouse_x, float mouse_y) const
 
 
 	// INTERACTIVE
-	InteractiveString(x, y - 20, "New game", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
-
-	InteractiveString(x, y - 50, "Menu", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+	// draw buttons
+	bool mouseOnButton1 = InteractiveString(x, y - 20, "New game", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+	bool mouseOnButton2 = InteractiveString(x, y - 50, "Menu", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+	// processing clicks
+	if (mouseClick && mouseOnButton1) {
+		interfaceOn = false;
+		startGame = true;
+		winOn = false;
+	}
+	if (mouseClick && mouseOnButton2) {
+		menuOn = true;
+		winOn = false;
+	}
+	mouseClick = false;
 }
 
-void Interface::PrintLoss(float mouse_x, float mouse_y) const
+void Interface::Loss(float mouse_x, float mouse_y) const
 {
 	// STATIC
 	// draw window rect 
@@ -75,11 +117,21 @@ void Interface::PrintLoss(float mouse_x, float mouse_y) const
 	// draw header
 	PrintString(x - getStringLength("Loss!", 40) / 2, y + 20, "Loss!", 40, 0, 0, 0);
 
-
 	// INTERACTIVE
-	InteractiveString(x, y - 20, "New game", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
-
-	InteractiveString(x, y - 50, "Menu", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+	// draw buttons
+	bool mouseOnButton1 = InteractiveString(x, y - 20, "New game", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+	bool mouseOnButton2 = InteractiveString(x, y - 50, "Menu", 20, mouse_x, mouse_y, 0, 0, 0, 1, 1, 0);
+	// processing clicks
+	if (mouseClick && mouseOnButton1) {
+		interfaceOn = false;
+		startGame = true;
+		lossOn = false;
+	}
+	if (mouseClick && mouseOnButton2) {
+		menuOn = true;
+		lossOn = false;
+	}
+	mouseClick = false;
 }
 
 void Interface::PrintString(float x, float y, const char* string, float size, float r, float g, float b) const
@@ -100,7 +152,7 @@ void Interface::PrintString(float x, float y, const char* string, float size, fl
 	glPopMatrix();
 }
 
-void Interface::InteractiveString(float x, float y, const char* string, float size,
+bool Interface::InteractiveString(float x, float y, const char* string, float size,
 								  float mouse_x, float mouse_y, 
 								  float r1, float g1, float b1,
 								  float r2, float g2, float b2) const
@@ -119,10 +171,11 @@ void Interface::InteractiveString(float x, float y, const char* string, float si
 	if (mouse_x > x1 && mouse_x < x2 &&  // if cursor in string rect - change color 
 		mouse_y > y1 && mouse_y < y2) {
 		PrintString(x1, y1, string, size, r2, g2, b2);
+		return true;
 	} else {
 		PrintString(x1, y1, string, size, r1, g1, b1);
+		return false;
 	}
-
 }
 
 void Interface::PrintNum(float x, float y, int num, float size, float r, float g, float b) const

@@ -9,13 +9,19 @@
 #include <algorithm>
 
 
-Map::Map(int sizeX, int sizeY) : loaded(false), sizeX(sizeX), sizeY(sizeY), numCoins(0), score(0)
+Map::Map(int sizeX, int sizeY) : loaded(false), sizeX(sizeX), sizeY(sizeY * 0.92), 
+                                 numCoins(0), score(0)
 {
 }
 
 Map::~Map()
 {
     for_each(walls.begin(), walls.end(),
+        [](DrawingObject* obj) {
+            delete obj;
+        }
+    );
+    for_each(coins.begin(), coins.end(),
         [](DrawingObject* obj) {
             delete obj;
         }
@@ -31,14 +37,11 @@ void Map::loadMap(const char* path)
         return;
     }
     char a;
-    cout << "Lvl file reading..." << endl;
     for (int i = 0; i < 34; i++)
     {
         for (int j = 0; j < 65; j++)
         {
-            f.get(a);
-            cout << a;  // for debug 
-            
+            f.get(a);            
             if (a != '\n' && a != '\0') 
                 lvlmap[i][j] = a;
         }
@@ -49,9 +52,20 @@ void Map::loadMap(const char* path)
 
 void Map::mapInit()
 {
+    // check for map reinit 
+    bool wallsExist = false;
+    if (walls.size() > 0) wallsExist = true;
+    if (coins.size() > 0) {     // delete coins if they are exist 
+        for_each(coins.begin(), coins.end(),
+            [](DrawingObject* obj) {
+                delete obj;
+            } );
+        coins.clear();
+        score = 0;
+    }
+    if (creatureSpawn.size() > 0) creatureSpawn.clear();
+    
     // Here is you need to interpret symbols as objects like 'walls' or 'coins' 
-    int InterfaceSize = 40;  // height of line with game statistics 
-    sizeY -= InterfaceSize;
     float blockSizeX = float(sizeX) / 64.0;
     float blockSizeY = float(sizeY) / 34.0;
 
@@ -59,7 +73,7 @@ void Map::mapInit()
     {
         for (int j = 0; j < 65; ++j)
         {
-            if (lvlmap[i][j] == '@')  // Walls
+            if (lvlmap[i][j] == '@' && !wallsExist)  // Walls
             {
                 float x = blockSizeX / 2 + blockSizeX * j;
                 float y = sizeY - ( blockSizeY / 2 + blockSizeY * i );
@@ -86,7 +100,7 @@ void Map::mapInit()
             }
         }
     } 
-    numGhosts = creatureSpawn.size() - 1;
+    numGhosts = std::min(int(creatureSpawn.size() - 1), 10);
 }
 
 void Map::print() const
@@ -173,7 +187,6 @@ void Map::updateCoins(const T& playerPos)
         if ( (coins[i]->getCenter() - playerPos).length() < getSize() * 2 / 3)
         {
             ++score;
-            cout << score << endl;
             k = i;
             break;
         }
@@ -182,3 +195,4 @@ void Map::updateCoins(const T& playerPos)
     if (k > -1)
         coins.erase(coins.begin() + k);
 }
+

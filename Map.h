@@ -19,9 +19,10 @@ class Map final
 	vector<Wall*> walls;  // walls and coins
 	vector<DrawingObject*> coins;
 
+public:
+	
 	int score;
 	
-public:
 	int numCoins;
 
 	int numGhosts;
