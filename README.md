@@ -1,5 +1,5 @@
 # Pucman
-Several years ago I coded my first computer game via C++ - pucman. It was build of procedural code (without classes and other OOP features) and had a one huge program file with more than thousand lines and big number of global variables and crutches. Now I have decided to refactor and recoded it with OOP principles. The repository contains both versions of my masterpiece, you can find their builds in "OLD version" and "OOP version" folders. There are two screenshots for you to compare below, first from new game and second from old one.
+Several years ago I coded my first computer game via C++ - pucman. It was build of procedural code (without classes and other OOP features) and had a one huge program file with more than thousand lines and big number of global variables and crutches. Now I have decided to refactor and recoded it with OOP principles. The repository contains both versions of my masterpiece, you can find their builds in "OLD version" and "OOP version" folders (A control is standard - WASD to move and ESC to pause (make sure you are using english keyboard). There are two screenshots for you to compare below, first from new game and second from old one.
 
 #### OOP version
 ![image](https://user-images.githubusercontent.com/61201241/205916746-56c492f2-aa33-4a7b-96b5-829e7bb0bd4e.png)
